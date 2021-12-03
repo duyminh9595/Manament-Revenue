@@ -6,15 +6,12 @@ import com.dmdd.revenuemanagement.entity.UserInfo;
 import com.dmdd.revenuemanagement.jwt.JwtGeneration;
 import com.dmdd.revenuemanagement.service.IUserService;
 import com.google.common.base.Strings;
-import com.sun.deploy.net.HttpResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.http.*;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Collections;

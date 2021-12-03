@@ -1,7 +1,6 @@
 package com.dmdd.revenuemanagement.controller;
 
 import com.dmdd.revenuemanagement.dto.*;
-import com.dmdd.revenuemanagement.entity.Type_Income;
 import com.dmdd.revenuemanagement.service.IUserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -9,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 @CrossOrigin
