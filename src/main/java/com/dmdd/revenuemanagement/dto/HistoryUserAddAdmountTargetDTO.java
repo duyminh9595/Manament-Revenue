@@ -10,4 +10,7 @@ public class HistoryUserAddAdmountTargetDTO {
     private float amount_to_vnd;
     private String currency;
     private float rate_of_time_add;
+    private String description;
+    private float total;
+    private float total_to_vnd;
 }

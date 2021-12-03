@@ -9,7 +9,7 @@ import java.util.List;
 
 @Entity
 @Data
-@Table(name = "main_type_income")
+@Table(name = "main_type_spending")
 public class Main_Type_Spending {
 
     @Id

@@ -25,4 +25,9 @@ public interface IUserService {
 
     List<HistoryUserAddAdmountTargetDTO>GetAllHistoryUserAddAmountTarget();
 
+    List<HistoryTargetDTO> GetHistoryTarget();
+
+    List<MainType> GetAllType();
+
+    boolean UpdateUserName(String username);
 }

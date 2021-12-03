@@ -12,4 +12,5 @@ public class RecentUserTransactionDTO {
     private boolean spend_or_income;
     private Long typeId;
     private String nameType;
+    private String description;
 }

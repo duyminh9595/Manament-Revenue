@@ -7,9 +7,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
+import java.util.List;
+
 @RepositoryRestResource(path = "maintypespending",collectionResourceRel = "maintypespending")
 @CrossOrigin
 public interface MainTypeSpendingRepository extends JpaRepository<Main_Type_Spending,Long> {
     @Query("select p from Main_Type_Spending  p  where p.id=?1")
     Main_Type_Spending findByMainTypeSpendingId(Long id);
+
+    @Query("select p from Main_Type_Spending  p  ")
+    List<Main_Type_Spending> findAllTypeSpending();
 }

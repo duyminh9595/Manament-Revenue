@@ -70,4 +70,25 @@ public class UserInfoController {
         List<HistoryUserAddAdmountTargetDTO>historyUserAddAdmountTargetDTOS=iUserService.GetAllHistoryUserAddAmountTarget();
         return ResponseEntity.ok(historyUserAddAdmountTargetDTOS);
     }
+    @GetMapping("/historytarget")
+    public ResponseEntity HistoryTarget()
+    {
+        List<HistoryTargetDTO>historyTargetDTOS=iUserService.GetHistoryTarget();
+        return ResponseEntity.ok(historyTargetDTOS);
+    }
+    @GetMapping("/gettypeall")
+    public ResponseEntity GetAllType()
+    {
+        List<MainType>mainTypeList=iUserService.GetAllType();
+        return ResponseEntity.ok(mainTypeList);
+    }
+    @PostMapping("/updateusername")
+    public ResponseEntity UpdateUsername(@RequestBody UpdateUsernameDTO updateUsernameDTO)
+    {
+        boolean check=iUserService.UpdateUserName(updateUsernameDTO.getUsername());
+        if(check)
+            return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.BAD_GATEWAY).build();
+    }
+
 }

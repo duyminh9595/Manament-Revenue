@@ -17,6 +17,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
@@ -32,6 +33,8 @@ public class UserServiceImpl implements IUserService{
     private TargetRepository targetRepository;
     private UserAddAmountTargetRepository userAddAmountTargetRepository;
     private DateFormat dateFormat;
+    private MainTypeIncomeRepository mainTypeIncomeRepository;
+    private MainTypeSpendingRepository mainTypeSpendingRepository;
 
     @Override
     public boolean RegisterUser(RegisterDTO registerDTO) {
@@ -174,6 +177,7 @@ public class UserServiceImpl implements IUserService{
         userInfoDTO.setSpendingAmount(toalSpending/rate);
         userInfoDTO.setImage_url(userInfoDTO.getImage_url());
         userInfoDTO.setCurrency(currency);
+        userInfoDTO.setFullName(userInfo.getFullName());
         return userInfoDTO;
     }
 
@@ -298,82 +302,34 @@ public class UserServiceImpl implements IUserService{
         List<User_Income>user_incomeList=userIncomeRepository.findAllUserIncomeOrderDateDesc(userInfo.getId(),true);
         List<RecentUserTransactionDTO>recentUserTransactionDTOS=new ArrayList<>();
         int i=0,j=0;
-        while(i<user_incomeList.size())
+        for(User_Spending data:user_spendingList)
         {
-            while(j<user_spendingList.size())
-            {
-                if(user_incomeList.get(i).getDate_Created().after(user_spendingList.get(j).getDate_Created()))
-                {
-                    RecentUserTransactionDTO recentUserTransactionDTO=new RecentUserTransactionDTO();
-//                    them loai income
-
-                    recentUserTransactionDTO.setNameType(user_incomeList.get(i).getType_income().getName());
-                    recentUserTransactionDTO.setTypeId(user_incomeList.get(i).getType_income().getId());
-                    recentUserTransactionDTO.setCurrency(user_incomeList.get(i).getCurrency());
-                    recentUserTransactionDTO.setRateExchangeToVND(user_incomeList.get(i).getRate_balance_to_vnd());
-                    recentUserTransactionDTO.setDateOfCreated(user_incomeList.get(i).getDate_Created().toString());
-                    recentUserTransactionDTO.setAmount(user_incomeList.get(i).getBalance());
-                    recentUserTransactionDTO.setSpend_or_income(true);
-                    recentUserTransactionDTOS.add(recentUserTransactionDTO);
-                    if(i<user_incomeList.size()-1)
-                        i++;
-                }
-                if(user_spendingList.get(j).getDate_Created().after(user_incomeList.get(i).getDate_Created()))
-                {
-                    RecentUserTransactionDTO recentUserTransactionDTO=new RecentUserTransactionDTO();
-//                    them loai spending
-
-                    recentUserTransactionDTO.setNameType(user_spendingList.get(j).getType_spending().getName());
-                    recentUserTransactionDTO.setTypeId(user_spendingList.get(j).getType_spending().getId());
-                    recentUserTransactionDTO.setCurrency(user_spendingList.get(j).getCurrency());
-                    recentUserTransactionDTO.setRateExchangeToVND(user_spendingList.get(j).getRate_balance_to_vnd());
-                    recentUserTransactionDTO.setDateOfCreated(user_spendingList.get(j).getDate_Created().toString());
-                    recentUserTransactionDTO.setAmount(user_spendingList.get(j).getBalance());
-                    recentUserTransactionDTO.setSpend_or_income(false);
-                    recentUserTransactionDTOS.add(recentUserTransactionDTO);
-                    if(j<user_spendingList.size()-1)
-                        j++;
-                }
-                if(i==user_incomeList.size()-1 && j <user_spendingList.size()-1)
-                {
-                    RecentUserTransactionDTO recentUserTransactionDTO=new RecentUserTransactionDTO();
-//                    them loai spending
-
-                    recentUserTransactionDTO.setNameType(user_spendingList.get(j).getType_spending().getName());
-                    recentUserTransactionDTO.setTypeId(user_spendingList.get(j).getType_spending().getId());
-                    recentUserTransactionDTO.setCurrency(user_spendingList.get(j).getCurrency());
-                    recentUserTransactionDTO.setRateExchangeToVND(user_spendingList.get(j).getRate_balance_to_vnd());
-                    recentUserTransactionDTO.setDateOfCreated(user_spendingList.get(j).getDate_Created().toString());
-                    recentUserTransactionDTO.setAmount(user_spendingList.get(j).getBalance());
-                    recentUserTransactionDTO.setSpend_or_income(false);
-                    recentUserTransactionDTOS.add(recentUserTransactionDTO);
-                    if(j<user_spendingList.size()-1)
-                        j++;
-                }
-
-                if(j==user_spendingList.size()-1 && i<user_incomeList.size()-1)
-                {
-                    RecentUserTransactionDTO recentUserTransactionDTO=new RecentUserTransactionDTO();
-//                    them loai income
-
-                    recentUserTransactionDTO.setNameType(user_incomeList.get(i).getType_income().getName());
-                    recentUserTransactionDTO.setTypeId(user_incomeList.get(i).getType_income().getId());
-                    recentUserTransactionDTO.setCurrency(user_incomeList.get(i).getCurrency());
-                    recentUserTransactionDTO.setRateExchangeToVND(user_incomeList.get(i).getRate_balance_to_vnd());
-                    recentUserTransactionDTO.setDateOfCreated(user_incomeList.get(i).getDate_Created().toString());
-                    recentUserTransactionDTO.setAmount(user_incomeList.get(i).getBalance());
-                    recentUserTransactionDTO.setSpend_or_income(true);
-                    recentUserTransactionDTOS.add(recentUserTransactionDTO);
-                    if(i<user_incomeList.size()-1)
-                        i++;
-                }
-                if(j==user_spendingList.size()-1 && i==user_incomeList.size()-1)
-                {
-                    return recentUserTransactionDTOS;
-                }
-            }
+            RecentUserTransactionDTO recentUserTransactionDTO=new RecentUserTransactionDTO();
+            recentUserTransactionDTO.setNameType(data.getType_spending().getName());
+            recentUserTransactionDTO.setTypeId(data.getType_spending().getId());
+            recentUserTransactionDTO.setCurrency(data.getCurrency());
+            recentUserTransactionDTO.setRateExchangeToVND(data.getRate_balance_to_vnd());
+            recentUserTransactionDTO.setDateOfCreated(data.getDate_Created().toString());
+            recentUserTransactionDTO.setAmount(data.getBalance());
+            recentUserTransactionDTO.setSpend_or_income(false);
+            recentUserTransactionDTO.setDescription("");
+            recentUserTransactionDTOS.add(recentUserTransactionDTO);
         }
-        return null;
+        for(User_Income data:user_incomeList)
+        {
+            RecentUserTransactionDTO recentUserTransactionDTO=new RecentUserTransactionDTO();
+            recentUserTransactionDTO.setNameType(data.getType_income().getName());
+            recentUserTransactionDTO.setTypeId(data.getType_income().getId());
+            recentUserTransactionDTO.setCurrency(data.getCurrency());
+            recentUserTransactionDTO.setRateExchangeToVND(data.getRate_balance_to_vnd());
+            recentUserTransactionDTO.setDateOfCreated(data.getDate_Created().toString());
+            recentUserTransactionDTO.setAmount(data.getBalance());
+            recentUserTransactionDTO.setSpend_or_income(true);
+            recentUserTransactionDTO.setDescription(data.getDescription());
+            recentUserTransactionDTOS.add(recentUserTransactionDTO);
+        }
+        recentUserTransactionDTOS=recentUserTransactionDTOS.stream().sorted((data1,data2)->data2.getDateOfCreated().compareTo(data1.getDateOfCreated())).collect(Collectors.toList());
+        return recentUserTransactionDTOS;
     }
 
     @Override
@@ -455,8 +411,94 @@ public class UserServiceImpl implements IUserService{
             historyUserAddAdmountTargetDTO.setRate_of_time_add(data.getRate());
             historyUserAddAdmountTargetDTO.setName_target(data.getTarget().getName());
             historyUserAddAdmountTargetDTO.setAmount_to_vnd(data.getAmount()*data.getRate());
+            historyUserAddAdmountTargetDTO.setTotal(data.getTarget().getTotal());
+            historyUserAddAdmountTargetDTO.setTotal_to_vnd(data.getRate()* historyUserAddAdmountTargetDTO.getTotal());
             historyUserAddAdmountTargetDTOS.add(historyUserAddAdmountTargetDTO);
         }
         return historyUserAddAdmountTargetDTOS;
+    }
+
+    @Override
+    public List<HistoryTargetDTO> GetHistoryTarget() {
+        UserInfo userInfo=userInfoRepository.findByEmail((SecurityContextHolder.getContext().getAuthentication().getName()));
+        if(userInfo==null)
+            return null;
+        List<HistoryTargetDTO>historyTargetDTOS=new ArrayList<>();
+        List<Target>targets=targetRepository.findTargetByUserId(userInfo.getId());
+        for(Target data:targets)
+        {
+            HistoryTargetDTO historyTargetDTO=new HistoryTargetDTO();
+            historyTargetDTO.setCurrency(data.getCurrency());
+            historyTargetDTO.setCurrent(data.getCurrent());
+            historyTargetDTO.setDescription(data.getDescription());
+            historyTargetDTO.setDate_created(data.getDate_created().toString());
+            historyTargetDTO.setDate_end(data.getDate_end().toString());
+            historyTargetDTO.setName(data.getName());
+            historyTargetDTO.setId(data.getId());
+            historyTargetDTO.setRate(data.getRate());
+            historyTargetDTO.setTotal(data.getTotal());
+
+
+            historyTargetDTOS.add(historyTargetDTO);
+        }
+        return historyTargetDTOS;
+    }
+
+    @Override
+    public List<MainType> GetAllType() {
+        List<Main_Type_Income>main_type_incomes= mainTypeIncomeRepository.findAllTypeIncome();
+        List<Main_Type_Spending>main_type_spendings= mainTypeSpendingRepository.findAllTypeSpending();
+        List<MainType>mainTypeList=new ArrayList<>();
+        for(Main_Type_Spending data:main_type_spendings)
+        {
+            MainType mainType=new MainType();
+            mainType.setId(data.getId());
+            mainType.setSpend_or_income(false);
+            mainType.setImage_url(data.getImage_url());
+            mainType.setName(data.getName());
+            List<TypeDTO>typeDTOList=new ArrayList<>();
+            for(Type_Spending dataInData:data.getType_spendingList())
+            {
+                TypeDTO typeDTO=new TypeDTO();
+                typeDTO.setId(dataInData.getId());
+                typeDTO.setName(dataInData.getName());
+                typeDTO.setImage_url(dataInData.getImage_url());
+                typeDTOList.add(typeDTO);
+            }
+            mainType.setTypeDTOList(typeDTOList);
+            mainTypeList.add(mainType);
+        }
+        for(Main_Type_Income data:main_type_incomes)
+        {
+            MainType mainType=new MainType();
+            mainType.setId(data.getId());
+            mainType.setSpend_or_income(true);
+            mainType.setImage_url(data.getImage_url());
+            mainType.setName(data.getName());
+            List<TypeDTO>typeDTOList=new ArrayList<>();
+            for(Type_Income dataInData:data.getType_incomeList())
+            {
+                TypeDTO typeDTO=new TypeDTO();
+                typeDTO.setId(dataInData.getId());
+                typeDTO.setName(dataInData.getName());
+                typeDTO.setImage_url(dataInData.getImage_url());
+                typeDTOList.add(typeDTO);
+            }
+            mainType.setTypeDTOList(typeDTOList);
+            mainTypeList.add(mainType);
+        }
+        return mainTypeList;
+    }
+
+    @Override
+    public boolean UpdateUserName(String username) {
+        UserInfo userInfo=userInfoRepository.findByEmail((SecurityContextHolder.getContext().getAuthentication().getName()));
+        if(userInfo!=null)
+        {
+            userInfo.setFullName(username);
+            userInfoRepository.save(userInfo);
+            return true;
+        }
+        return false;
     }
 }
