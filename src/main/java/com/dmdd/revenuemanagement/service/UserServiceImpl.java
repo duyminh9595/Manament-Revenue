@@ -48,6 +48,7 @@ public class UserServiceImpl implements IUserService{
         userInfo.setToken_email(uuid.toString());
         userInfo.setDate_Created(new Date());
         userInfo.setConfirm_email(true);
+        userInfo.setStatus(true);
         userInfoRepository.save(userInfo);
         String link="http://localhost:8585/user/confirm?token="+uuid;
         emailSenderService.sendSimpleMessage(registerDTO.getEmail(),"xac nhan dang ky tai ngok ngek boy",link);
